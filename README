@@ -1,0 +1,12 @@
+Bioscreen Utility Functions
+Functions for analysis of growth curves data from high throughput devices such as BiocreenC or 96 well plate spectrophotometers
+
+Files
+bsdAnalysisFunc.R
+  Set of functions for analysis
+
+bsdAnalysis.R
+  Example workflow script
+
+bsdAnalysisPlot.R
+  Example plotting script
