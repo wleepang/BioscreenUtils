@@ -392,3 +392,24 @@ bsdMergeReplicates <- function(x, lyt) {
 	return(list(xbar=xbar, rmsd=rep.rmsd))
 }
 ## END FUNCTION
+
+## BGN FUNCTION
+getWellIds = function(cult.name, lyt, prefix='Well') {
+  # retrieves well.ids for named cultures
+  
+  # check that cult.names exist
+  NamesFound = (lyt$Names %in% cult.name)
+  
+  if (!any(NamesFound)) {
+    stop('culture names not found')
+  }
+  
+  
+  well.ids = unlist(lyt$Reps[NamesFound])
+  if (!is.null(prefix)) {
+    well.ids = paste(prefix, well.ids, sep='.')
+  }
+
+  return(well.ids)
+}
+## END FUNCTION

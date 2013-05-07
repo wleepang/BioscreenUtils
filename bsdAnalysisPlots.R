@@ -1,8 +1,8 @@
 # define layout
-lyt = getLayout('bioscreen_20110908_layout.txt')
+lyt = getLayout('./data/20110908/20110908_layout.txt')
 
 # collect data
-bsd = bsdProcess('20110908.csv')
+bsd = bsdProcess('./data/20110908/20110908_data.csv')
 # bsd = list(at=bsd$at, # absolute time
 # 					 xn=bsd$xn, # normalized smoothed profile
 # 					 mu=bsd$mu) # instantaneous specific growth rate
@@ -18,7 +18,7 @@ xn.ylim = range(bsd$xn)
 mu.ylim = colMeans(t(apply(bsd$mu, 2, range)))*1.1 # robust way to find global plot range for mu
 
 # plot all unique cultures and their replicates
-pdf('20110908_Summary.pdf', width=11, height=8.5)
+pdf('./data/20110908/20110908_Summary.pdf', width=11, height=8.5)
 for (Name in lyt$Names) {
 	at = bsd$at
 	reps = paste('Well', lyt$Reps[[Name]], sep='.')
