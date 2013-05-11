@@ -48,5 +48,25 @@ smooth.adaptive = function(x, y=NULL, pct=0.1, niter=NULL) {
   
 }
 
-plot(smooth.adaptive(xy.in), type='l', log='y', main=sprintf('iter: %d', i))
-points(xy.in, pch=16, cex=0.2, col='red')
+#xy.out = smooth.adaptive(xy.in)
+#plot(xy.out, type='l', log='y', main=sprintf('iter: %d', xy.out$niter))
+#points(xy.in, pch=16, cex=0.2, col='red')
+
+curves.s = curves[,-1]
+curves.s = lapply(curves.s, function(y){
+  y.s = smooth.adaptive(list(x=time, y=y), niter=10)$y
+  #y.s.n = y.s / min(y.s[1:floor(length(y.s)*0.05)])
+  return(y.s)
+})
+curves.s = data.frame(curves.s)
+
+#matplot(curves.s, type='l', log='y')
+
+windows(12,8)
+par(mar=c(0,0,0,0))
+layout(matrix(1:96, nrow=8, ncol=12, byrow=T))
+lapply(1:96, function(i){
+  plot(time, curves[[i+1]], type='p', pch=16, cex=0.2, col='red', log='y', xaxt='n', yaxt='n', ylim=c(0.005, max(curves[,-1])))
+  lines(time, curves.s[[i]], lwd=1.5)
+  legend('bottomright', legend=colnames(curves)[i+1], bty='n')
+})
