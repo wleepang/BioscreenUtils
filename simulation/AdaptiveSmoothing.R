@@ -11,7 +11,7 @@ X = paste('X', 2, sep='')
 
 xy.in = list(x=time, y=curves[[X]])
 
-smooth.adaptive = function(x, y=NULL, pct=0.1, niter=NULL) {
+smooth.adaptive.spline = function(x, y=NULL, pct=0.1, niter=NULL) {
   # performs jack-knifed / cross-validated smoothing
   
   if (!is.null(x$y)) {
