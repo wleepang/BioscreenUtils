@@ -47,6 +47,34 @@ smooth.adaptive.spline = function(x, y=NULL, pct=0.1, niter=NULL) {
   return(XY)
   
 }
+smooth.adaptive.loess = function(x, y=NULL, span.interval=c(0.1, 0.7)) {
+  # uses loess (local weighted polynomial fitting) to smooth curve
+  # optimizes the span parameter to fit the data but avoid over-smoothing
+  
+  if (is.null(y) & ! is.list(x)) {
+    stop('first argument must be xy.coords')
+  }
+  
+  if (is.null(y) & is.list(x)) {
+    y = x$y
+    x = x$x
+  }
+  
+  span.opt = optimize(function(span, x, y){
+    y.loess = loess(y~x, span=span, data.frame(x=x, y=log(y)))
+    y.predict = exp(predict(y.loess, data.frame(x=x)))
+    sse = sum(y.loess$residuals^2)
+    opt = sse/span
+    
+    return(opt)
+    
+  }, c(0.1, 0.7), x, y, maximum=FALSE)
+  
+  y.loess = loess(y~x, span=span.opt$minimum, data.frame(x=x, y=log(y)))
+  y.predict = exp(predict(y.loess, data.frame(x=x)))
+  
+  return(list(x=x, y=unname(y.predict), span=span.opt$minimum, objective=span.opt$objective))
+}
 
 #xy.out = smooth.adaptive(xy.in)
 #plot(xy.out, type='l', log='y', main=sprintf('iter: %d', xy.out$niter))
@@ -54,8 +82,9 @@ smooth.adaptive.spline = function(x, y=NULL, pct=0.1, niter=NULL) {
 
 curves.s = curves[,-1]
 curves.s = lapply(curves.s, function(y){
-  y.s = smooth.adaptive(list(x=time, y=y), niter=10)$y
-  #y.s.n = y.s / min(y.s[1:floor(length(y.s)*0.05)])
+  y.s = smooth.adaptive.spline(list(x=time, y=y), niter=10)$y
+  #y.s = smooth.adaptive.loess(list(x=time, y=y))$y
+  
   return(y.s)
 })
 curves.s = data.frame(curves.s)
